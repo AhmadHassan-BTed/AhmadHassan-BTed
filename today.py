@@ -323,10 +323,16 @@ def calculate_loc(my_node_id: str) -> tuple[int, int, int, int, int]:
         rh = repo_hash(name_with_owner)
 
         # --- NEW STATS CALCULATION ---
-        total_stars += repo.get("stargazerCount", 0)
+        stars_on_this_repo = repo.get("stargazerCount", 0)
+        total_stars += stars_on_this_repo
+        
         owner = name_with_owner.split("/")[0]
         if owner.lower() != USER_NAME.lower():
             contributed_repos += 1
+
+        # Debug tracker to see which repos are bringing in the stars
+        if stars_on_this_repo > 0:
+            print(f"  [*] Star Tracker: {name_with_owner} has {stars_on_this_repo} stars.")
         # -----------------------------
 
         # Repos with no default branch (empty repos) can be skipped
@@ -447,39 +453,22 @@ def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: in
     # ------------------------
 
     # --- DYNAMIC DOT CALCULATION ---
-    # 1. Calculate the length of the dynamic numbers
+    # 1. Net LOC alignment
     dynamic_text_len = len(net_str) + len(add_str) + len(del_str)
-
-    # # Regenerate dot-spacers so alignment stays consistent.
-    # # The original dot widths from the SVG hint at ~2 and ~1 chars.
-    # set_text("loc_data_dots", " ")          # short spacer before net LOC
-    # # loc_del_dots is typically empty in the template (inline spacer)
-    # if "loc_del_dots" in id_map:
-        # set_text("loc_del_dots", " ")
-
-    # --- DYNAMIC DOT CALCULATION ---
-    # 1. Calculate the length of the dynamic numbers
-    dynamic_text_len = len(net_str) + len(add_str) + len(del_str)
-    
-    # 2. Add the length of the static characters present in your SVG template.
-    # This accounts for the spaces, parentheses, pluses, and minuses: " ( ++,  -- )"
-    # (Adjust this number slightly if your SVG spacing is slightly different)
     static_svg_chars_len = 13 
-    
-    # 3. Define the total character length you want the right side to occupy.
-    # This acts as your "right boundary". Tweak this until the right parenthesis 
-    # perfectly aligns with the fields above it.
     TARGET_TOTAL_LEN = 33
-    
     current_text_len = dynamic_text_len + static_svg_chars_len
-    
-    # 4. Generate the dots using your existing helper function
-    calculated_dots = _dots(TARGET_TOTAL_LEN, current_text_len)
-    
-    set_text("loc_data_dots", calculated_dots)
+    set_text("loc_data_dots", _dots(TARGET_TOTAL_LEN, current_text_len))
 
     if "loc_del_dots" in id_map:
         set_text("loc_del_dots", " ")
+
+    # 2. Repos & Contributed alignment (Baseline 25 characters)
+    dynamic_repo_text = f"{total_repos} {{Contributed: {contributed_repos}}}"
+    set_text("repo_data_dots", _dots(25, len(dynamic_repo_text)))
+
+    # 3. Stars alignment (Baseline 14 characters)
+    set_text("star_data_dots", _dots(14, len(str(total_stars))))
 
     tree.write(str(path), xml_declaration=True, encoding="UTF-8", pretty_print=False)
     print(f"  [svg] patched {filepath}  net={net_str} +{add_str} -{del_str}")
