@@ -90,6 +90,7 @@ query($after: String) {
       nodes {
         nameWithOwner
         isArchived
+        stargazerCount
         defaultBranchRef {
           target {
             ... on Commit {
@@ -319,6 +320,13 @@ def calculate_loc(my_node_id: str) -> tuple[int, int]:
         name_with_owner: str = repo["nameWithOwner"]
         rh = repo_hash(name_with_owner)
 
+        # --- NEW STATS CALCULATION ---
+        total_stars += repo.get("stargazerCount", 0)
+        owner = name_with_owner.split("/")[0]
+        if owner.lower() != USER_NAME.lower():
+            contributed_repos += 1
+        # -----------------------------
+
         # Repos with no default branch (empty repos) can be skipped
         default_branch_ref = repo.get("defaultBranchRef")
         if not default_branch_ref:
@@ -430,6 +438,20 @@ def patch_svg(filepath: str, added: int, deleted: int, net: int) -> None:
     set_text("loc_add",       add_str)
     set_text("loc_del",       del_str)
 
+    net_str  = format_number(net)
+    add_str  = format_number(added)
+    del_str  = format_number(deleted)
+
+    set_text("loc_data",      net_str)
+    set_text("loc_add",       add_str)
+    set_text("loc_del",       del_str)
+
+    # --- INJECT NEW STATS ---
+    set_text("repo_count", str(total_repos))
+    set_text("repo_contrib", str(contributed_repos))
+    set_text("star_count", str(total_stars))
+    # ------------------------
+
     # # Regenerate dot-spacers so alignment stays consistent.
     # # The original dot widths from the SVG hint at ~2 and ~1 chars.
     # set_text("loc_data_dots", " ")          # short spacer before net LOC
@@ -473,27 +495,26 @@ def main() -> None:
     print("GitHub LOC Stats Updater")
     print("=" * 60)
 
-    # 1. Identify the authenticated user
     my_node_id = get_viewer_id()
 
-    # 2. Count LOC
-    print("\n[loc] Calculating Lines of Code …")
-    total_added, total_deleted = calculate_loc(my_node_id)
+    print("\n[loc] Calculating Lines of Code & Stats …")
+    total_added, total_deleted, total_repos, contributed_repos, total_stars = calculate_loc(my_node_id)
     net_loc = total_added - total_deleted
 
     print("\n" + "=" * 60)
+    print(f"  Total Repos   : {total_repos}")
+    print(f"  Contributed   : {contributed_repos}")
+    print(f"  Total Stars   : {total_stars}")
     print(f"  Lines added   : {format_number(total_added)}")
     print(f"  Lines deleted : {format_number(total_deleted)}")
     print(f"  Net LOC       : {format_number(net_loc)}")
     print("=" * 60)
 
-    # 3. Patch SVG files
     print("\n[svg] Updating SVG files …")
     for svg_file in SVG_FILES:
-        patch_svg(svg_file, total_added, total_deleted, net_loc)
+        patch_svg(svg_file, total_added, total_deleted, net_loc, total_repos, contributed_repos, total_stars)
 
     print("\n[done] All done.")
-
 
 if __name__ == "__main__":
     main()
