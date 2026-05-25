@@ -305,16 +305,18 @@ def traverse_repo_loc(owner: str, repo_name: str, my_node_id: str) -> tuple[int,
     return added, deleted
 
 
-def calculate_loc(my_node_id: str) -> tuple[int, int]:
+def calculate_loc(my_node_id: str) -> tuple[int, int, int, int, int]:
     """
     Main entry: iterate over all accessible repos, using the cache where
-    possible, and return (total_added, total_deleted).
+    possible, and return (total_added, total_deleted, total_repos, contributed, stars).
     """
     cache = load_cache()
     all_repos = fetch_all_repos()
 
-    total_added   = 0
-    total_deleted = 0
+    total_added       = 0
+    total_deleted     = 0
+    total_stars       = 0
+    contributed_repos = 0
 
     for idx, repo in enumerate(all_repos, 1):
         name_with_owner: str = repo["nameWithOwner"]
@@ -372,7 +374,7 @@ def calculate_loc(my_node_id: str) -> tuple[int, int]:
         total_deleted += dele
 
     save_cache(cache)
-    return total_added, total_deleted
+    return total_added, total_deleted, len(all_repos), contributed_repos, total_stars
 
 # ──────────────────────────────────────────────────────────────────────────────
 # SVG patching
@@ -404,7 +406,7 @@ def format_number(n: int) -> str:
     return f"{n:,}"
 
 
-def patch_svg(filepath: str, added: int, deleted: int, net: int) -> None:
+def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: int, contributed_repos: int, total_stars: int) -> None:
     """Update LOC-related text nodes in the SVG file using lxml."""
     path = Path(filepath)
     if not path.exists():
@@ -438,19 +440,15 @@ def patch_svg(filepath: str, added: int, deleted: int, net: int) -> None:
     set_text("loc_add",       add_str)
     set_text("loc_del",       del_str)
 
-    net_str  = format_number(net)
-    add_str  = format_number(added)
-    del_str  = format_number(deleted)
-
-    set_text("loc_data",      net_str)
-    set_text("loc_add",       add_str)
-    set_text("loc_del",       del_str)
-
     # --- INJECT NEW STATS ---
-    set_text("repo_count", str(total_repos))
-    set_text("repo_contrib", str(contributed_repos))
-    set_text("star_count", str(total_stars))
+    set_text("repo_data", str(total_repos))
+    set_text("contrib_data", str(contributed_repos))
+    set_text("star_data", str(total_stars))
     # ------------------------
+
+    # --- DYNAMIC DOT CALCULATION ---
+    # 1. Calculate the length of the dynamic numbers
+    dynamic_text_len = len(net_str) + len(add_str) + len(del_str)
 
     # # Regenerate dot-spacers so alignment stays consistent.
     # # The original dot widths from the SVG hint at ~2 and ~1 chars.
