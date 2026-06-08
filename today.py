@@ -31,12 +31,12 @@ KNOWN_EMAILS: set[str] = {
 
 # Sub-strings that appear in the raw Git author name field
 KNOWN_NAME_FRAGMENTS: list[str] = [
-    "ahmad",
-    "hassan",
-    "bted",
-    "b-ted",
+    "ahmad hassan",
     "ahmadhassan",
     "ahmadhassan-bted",
+    "ahmadhassan_bted",
+    "b-ted",
+    "bted",
 ]
 
 # Repositories per page (GraphQL max is 100)
