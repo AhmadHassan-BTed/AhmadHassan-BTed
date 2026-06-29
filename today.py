@@ -208,26 +208,29 @@ def is_my_commit(commit_author: dict, my_node_id: str) -> bool:
 # Cache helpers
 # ──────────────────────────────────────────────────────────────────────────────
 
-def load_cache() -> dict[str, tuple[int, int, int]]:
-    cache: dict[str, tuple[int, int, int]] = {}
+def load_cache() -> dict[str, tuple[int, int, int, int]]:
+    cache: dict[str, tuple[int, int, int, int]] = {}
     if not CACHE_FILE.exists():
         return cache
     with CACHE_FILE.open() as fh:
         for line in fh:
             parts = line.strip().split()
-            if len(parts) == 4:
-                h, tc, a, d = parts
+            if len(parts) == 5:
+                h, tc, a, d, mc = parts
                 try:
-                    cache[h] = (int(tc), int(a), int(d))
+                    cache[h] = (int(tc), int(a), int(d), int(mc))
                 except ValueError:
                     pass
+            # old 4-column cache lines (pre-commit-count) are silently
+            # dropped here — that repo just gets re-traversed once and
+            # re-saved in the new 5-column format.
     return cache
 
-def save_cache(cache: dict[str, tuple[int, int, int]]) -> None:
+def save_cache(cache: dict[str, tuple[int, int, int, int]]) -> None:
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     with CACHE_FILE.open("w") as fh:
-        for repo_hash, (tc, a, d) in cache.items():
-            fh.write(f"{repo_hash} {tc} {a} {d}\n")
+        for repo_hash, (tc, a, d, mc) in cache.items():
+            fh.write(f"{repo_hash} {tc} {a} {d} {mc}\n")
 
 def repo_hash(name_with_owner: str) -> str:
     return hashlib.md5(name_with_owner.encode()).hexdigest()
@@ -275,8 +278,8 @@ def fetch_all_repos() -> list[dict]:
     return repos
 
 
-def traverse_repo_loc(owner: str, repo_name: str, my_node_id: str) -> tuple[int, int]:
-    added, deleted = 0, 0
+def traverse_repo_loc(owner: str, repo_name: str, my_node_id: str) -> tuple[int, int, int]:
+    added, deleted, matched_commits = 0, 0, 0
     cursor: Optional[str] = None
     while True:
         data = graphql_request(
@@ -295,14 +298,15 @@ def traverse_repo_loc(owner: str, repo_name: str, my_node_id: str) -> tuple[int,
             if is_my_commit(author, my_node_id):
                 added   += node.get("additions", 0)
                 deleted += node.get("deletions", 0)
+                matched_commits += 1
         page_info = history["pageInfo"]
         if not page_info["hasNextPage"]:
             break
         cursor = page_info["endCursor"]
-    return added, deleted
+    return added, deleted, matched_commits
 
 
-def calculate_loc(my_node_id: str) -> tuple[int, int, int, int, int]:
+def calculate_loc(my_node_id: str) -> tuple[int, int, int, int, int, int]:
     cache = load_cache()
     all_repos = fetch_all_repos()
 
@@ -310,6 +314,7 @@ def calculate_loc(my_node_id: str) -> tuple[int, int, int, int, int]:
     total_deleted     = 0
     total_stars       = 0
     contributed_repos = 0
+    total_commits     = 0
 
     for idx, repo in enumerate(all_repos, 1):
         name_with_owner: str = repo["nameWithOwner"]
@@ -340,7 +345,7 @@ def calculate_loc(my_node_id: str) -> tuple[int, int, int, int, int]:
 
         # ── Cache hit? ────────────────────────────────────────────────────────
         if rh in cache:
-            cached_tc, cached_add, cached_del = cache[rh]
+            cached_tc, cached_add, cached_del, cached_mc = cache[rh]
             
             # AUTO-HEAL THE POISONED CACHE
             # If the cache contains the bug (more deletions than additions), ignore it
@@ -349,10 +354,11 @@ def calculate_loc(my_node_id: str) -> tuple[int, int, int, int, int]:
                 print(
                     f"  [{idx}/{len(all_repos)}] {name_with_owner} — "
                     f"cache hit ({api_total_commits} commits), "
-                    f"+{cached_add} / -{cached_del}"
+                    f"+{cached_add} / -{cached_del}, mine={cached_mc}"
                 )
                 total_added   += cached_add
                 total_deleted += cached_del
+                total_commits += cached_mc
                 continue
 
         # ── Cache miss / stale — traverse history ────────────────────────────
@@ -362,7 +368,7 @@ def calculate_loc(my_node_id: str) -> tuple[int, int, int, int, int]:
         )
         try:
             owner, repo_name = name_with_owner.split("/", 1)
-            add, dele = traverse_repo_loc(owner, repo_name, my_node_id)
+            add, dele, mc = traverse_repo_loc(owner, repo_name, my_node_id)
         except Exception as exc:
             print(f"    [error] Failed to traverse {name_with_owner}: {exc}, skipping")
             continue
@@ -373,13 +379,14 @@ def calculate_loc(my_node_id: str) -> tuple[int, int, int, int, int]:
         if dele > add:
             dele = add
 
-        print(f"    → +{add} / -{dele}")
-        cache[rh] = (api_total_commits, add, dele)
+        print(f"    → +{add} / -{dele}, mine={mc} commits")
+        cache[rh] = (api_total_commits, add, dele, mc)
         total_added   += add
         total_deleted += dele
+        total_commits += mc
 
     save_cache(cache)
-    return total_added, total_deleted, len(all_repos), contributed_repos, total_stars
+    return total_added, total_deleted, len(all_repos), contributed_repos, total_stars, total_commits
 
 # ──────────────────────────────────────────────────────────────────────────────
 # SVG patching
@@ -400,7 +407,7 @@ def format_number(n: int) -> str:
     return f"{n:,}"
 
 
-def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: int, contributed_repos: int, total_stars: int, uptime_str: str, followers: int) -> None:
+def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: int, contributed_repos: int, total_stars: int, uptime_str: str, followers: int, total_commits: int) -> None:
     path = Path(filepath)
     if not path.exists():
         print(f"  [svg] {filepath} not found, skipping")
@@ -437,6 +444,7 @@ def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: in
 
     set_text("age_data", uptime_str)
     set_text("follower_data", str(followers))
+    set_text("commit_data", str(total_commits))
 
     # --- DYNAMIC DOT CALCULATION ---
     dynamic_text_len = len(net_str) + len(add_str) + len(del_str)
@@ -457,9 +465,10 @@ def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: in
     # however long the uptime string or follower count get.
     set_text("age_data_dots", _dots(49, len(uptime_str)))
     set_text("follower_data_dots", _dots(10, len(str(followers))))
+    set_text("commit_data_dots", _dots(22, len(str(total_commits))))
 
     tree.write(str(path), xml_declaration=True, encoding="UTF-8", pretty_print=False)
-    print(f"  [svg] patched {filepath}  net={net_str} +{add_str} -{del_str}  uptime={uptime_str}  followers={followers}")
+    print(f"  [svg] patched {filepath}  net={net_str} +{add_str} -{del_str}  uptime={uptime_str}  followers={followers}  commits={total_commits}")
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Entry point
@@ -474,13 +483,14 @@ def main() -> None:
     uptime_str = get_uptime_str(BIRTH_DATE)
 
     print("\n[loc] Calculating Lines of Code & Stats …")
-    total_added, total_deleted, total_repos, contributed_repos, total_stars = calculate_loc(my_node_id)
+    total_added, total_deleted, total_repos, contributed_repos, total_stars, total_commits = calculate_loc(my_node_id)
     net_loc = total_added - total_deleted
 
     print("\n" + "=" * 60)
     print(f"  Total Repos   : {total_repos}")
     print(f"  Contributed   : {contributed_repos}")
     print(f"  Total Stars   : {total_stars}")
+    print(f"  Total Commits : {total_commits}")
     print(f"  Followers     : {followers}")
     print(f"  Uptime        : {uptime_str}")
     print(f"  Lines added   : {format_number(total_added)}")
@@ -490,7 +500,7 @@ def main() -> None:
 
     print("\n[svg] Updating SVG files …")
     for svg_file in SVG_FILES:
-        patch_svg(svg_file, total_added, total_deleted, net_loc, total_repos, contributed_repos, total_stars, uptime_str, followers)
+        patch_svg(svg_file, total_added, total_deleted, net_loc, total_repos, contributed_repos, total_stars, uptime_str, followers, total_commits)
 
     print("\n[done] All done.")
 
