@@ -31,6 +31,13 @@ jobs:
           USER_NAME: AhmadHassan-BTed
         run: python today.py
 
+      - name: Run script
+        env:
+          ACCESS_TOKEN: ${{ secrets.METRICS_TOKEN }}
+          USER_NAME: AhmadHassan-BTed
+          BIRTH_DATE: ${{ secrets.BIRTH_DATE }}
+        run: python today.py
+
       - name: Commit and push changes
         run: |
           git config --global user.name 'github-actions[bot]'
