@@ -5,10 +5,12 @@ import os
 import re
 import sys
 import time
+from datetime import date, datetime
 from pathlib import Path
 from typing import Optional
 
 import requests
+from dateutil.relativedelta import relativedelta
 from lxml import etree
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -17,6 +19,16 @@ from lxml import etree
 
 ACCESS_TOKEN: str = os.environ["ACCESS_TOKEN"]
 USER_NAME: str    = os.environ.get("USER_NAME", "AhmadHassan-BTed")
+
+# Date of birth, used to compute the live "Uptime" field.
+# Set this via a repo secret (BIRTH_DATE, format YYYY-MM-DD) instead of
+# hardcoding it here — this file is public, a secret is not.
+_BIRTH_DATE_RAW: str = os.environ.get("BIRTH_DATE", "2003-01-01")
+try:
+    BIRTH_DATE: date = datetime.strptime(_BIRTH_DATE_RAW, "%Y-%m-%d").date()
+except ValueError:
+    print(f"  [config] BIRTH_DATE='{_BIRTH_DATE_RAW}' is not YYYY-MM-DD, falling back to 2003-01-01")
+    BIRTH_DATE = date(2003, 1, 1)
 
 GITHUB_API_URL = "https://api.github.com/graphql"
 HEADERS = {
@@ -70,6 +82,9 @@ query {
   viewer {
     id
     login
+    followers {
+      totalCount
+    }
   }
 }
 """
@@ -221,11 +236,24 @@ def repo_hash(name_with_owner: str) -> str:
 # Core logic
 # ──────────────────────────────────────────────────────────────────────────────
 
-def get_viewer_id() -> str:
+def get_viewer_info() -> tuple[str, int]:
     data = graphql_request(VIEWER_ID_QUERY)
     viewer = data["data"]["viewer"]
-    print(f"[auth] Authenticated as: {viewer['login']}  (id: {viewer['id']})")
-    return viewer["id"]
+    followers = viewer["followers"]["totalCount"]
+    print(f"[auth] Authenticated as: {viewer['login']}  (id: {viewer['id']}, followers: {followers})")
+    return viewer["id"], followers
+
+
+def get_uptime_str(birth: date) -> str:
+    """Live 'years, months, days' string from BIRTH_DATE to today — recomputed on every run."""
+    today = date.today()
+    delta = relativedelta(today, birth)
+    parts = [
+        f"{delta.years} year{'s' if delta.years != 1 else ''}",
+        f"{delta.months} month{'s' if delta.months != 1 else ''}",
+        f"{delta.days} day{'s' if delta.days != 1 else ''}",
+    ]
+    return ", ".join(parts)
 
 
 def fetch_all_repos() -> list[dict]:
@@ -372,7 +400,7 @@ def format_number(n: int) -> str:
     return f"{n:,}"
 
 
-def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: int, contributed_repos: int, total_stars: int) -> None:
+def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: int, contributed_repos: int, total_stars: int, uptime_str: str, followers: int) -> None:
     path = Path(filepath)
     if not path.exists():
         print(f"  [svg] {filepath} not found, skipping")
@@ -407,6 +435,9 @@ def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: in
     set_text("contrib_data", str(contributed_repos))
     set_text("star_data", str(total_stars))
 
+    set_text("age_data", uptime_str)
+    set_text("follower_data", str(followers))
+
     # --- DYNAMIC DOT CALCULATION ---
     dynamic_text_len = len(net_str) + len(add_str) + len(del_str)
     static_svg_chars_len = 13 
@@ -421,8 +452,14 @@ def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: in
     set_text("repo_data_dots", _dots(25, len(dynamic_repo_text)))
     set_text("star_data_dots", _dots(14, len(str(total_stars))))
 
+    # age_data_dots / follower_data_dots: target lengths reproduce the original
+    # template's line width (dots + value) so things stay visually aligned
+    # however long the uptime string or follower count get.
+    set_text("age_data_dots", _dots(49, len(uptime_str)))
+    set_text("follower_data_dots", _dots(10, len(str(followers))))
+
     tree.write(str(path), xml_declaration=True, encoding="UTF-8", pretty_print=False)
-    print(f"  [svg] patched {filepath}  net={net_str} +{add_str} -{del_str}")
+    print(f"  [svg] patched {filepath}  net={net_str} +{add_str} -{del_str}  uptime={uptime_str}  followers={followers}")
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Entry point
@@ -433,7 +470,8 @@ def main() -> None:
     print("GitHub LOC Stats Updater")
     print("=" * 60)
 
-    my_node_id = get_viewer_id()
+    my_node_id, followers = get_viewer_info()
+    uptime_str = get_uptime_str(BIRTH_DATE)
 
     print("\n[loc] Calculating Lines of Code & Stats …")
     total_added, total_deleted, total_repos, contributed_repos, total_stars = calculate_loc(my_node_id)
@@ -443,6 +481,8 @@ def main() -> None:
     print(f"  Total Repos   : {total_repos}")
     print(f"  Contributed   : {contributed_repos}")
     print(f"  Total Stars   : {total_stars}")
+    print(f"  Followers     : {followers}")
+    print(f"  Uptime        : {uptime_str}")
     print(f"  Lines added   : {format_number(total_added)}")
     print(f"  Lines deleted : {format_number(total_deleted)}")
     print(f"  Net LOC       : {format_number(net_loc)}")
@@ -450,7 +490,7 @@ def main() -> None:
 
     print("\n[svg] Updating SVG files …")
     for svg_file in SVG_FILES:
-        patch_svg(svg_file, total_added, total_deleted, net_loc, total_repos, contributed_repos, total_stars)
+        patch_svg(svg_file, total_added, total_deleted, net_loc, total_repos, contributed_repos, total_stars, uptime_str, followers)
 
     print("\n[done] All done.")
 
