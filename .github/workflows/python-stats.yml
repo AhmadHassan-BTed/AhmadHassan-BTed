@@ -1,19 +1,15 @@
 name: Update Python Stats
-
 on:
   schedule:
     - cron: '0 */12 * * *'
   workflow_dispatch:
-
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write 
-
     steps:
       - uses: actions/checkout@v4 
       
@@ -25,12 +21,6 @@ jobs:
       - name: Install dependencies
         run: pip install requests lxml python-dateutil
         
-      - name: Run script
-        env:
-          ACCESS_TOKEN: ${{ secrets.METRICS_TOKEN }}
-          USER_NAME: AhmadHassan-BTed
-        run: python today.py
-
       - name: Run script
         env:
           ACCESS_TOKEN: ${{ secrets.METRICS_TOKEN }}
