@@ -77,8 +77,8 @@ CACHE_FILE = CACHE_DIR / f"{hashlib.md5(USER_NAME.encode()).hexdigest()}.txt"
 CONFIG_FILE = Path("profile_config.json")
 
 # Configurable profile fields: (json_key, display_key, data_element_id, dots_element_id)
-# Formula: total line width is strictly 60 chars.
-# target_dots_len = 55 - len(display_key)
+# Formula: total line width is strictly 65 chars.
+# target_dots_len = 60 - len(display_key)
 # max_chars = target_dots_len - 2 (guarantees at least 2 dots: ' .. ')
 PROFILE_FIELDS = [
     ("os",                    "OS",                    "os_data",         "os_dots"),
@@ -454,7 +454,7 @@ def load_profile_config() -> dict[str, tuple[str, str, str, str]]:
         val = item.get("value", "") if isinstance(item, dict) else str(item)
         val = val.strip()
 
-        target_dots_len = 55 - len(display_key)
+        target_dots_len = 60 - len(display_key)
         max_chars = target_dots_len - 2
 
         val_len = len(val)
@@ -528,7 +528,7 @@ def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: in
     # --- DYNAMIC DOT CALCULATION ---
     dynamic_text_len = len(net_str) + len(add_str) + len(del_str)
     static_svg_chars_len = 13 
-    TARGET_TOTAL_LEN = 33
+    TARGET_TOTAL_LEN = 38
     current_text_len = dynamic_text_len + static_svg_chars_len
     set_text("loc_data_dots", _dots(TARGET_TOTAL_LEN, current_text_len))
 
@@ -537,13 +537,13 @@ def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: in
 
     dynamic_repo_text = f"{total_repos} {{Contributed: {contributed_repos}}}"
     set_text("repo_data_dots", _dots(25, len(dynamic_repo_text)))
-    set_text("star_data_dots", _dots(14, len(str(total_stars))))
+    set_text("star_data_dots", _dots(19, len(str(total_stars))))
 
     # age_data_dots / follower_data_dots: target lengths reproduce the original
     # template's line width (dots + value) so things stay visually aligned
     # however long the uptime string or follower count get.
-    set_text("age_data_dots", _dots(49, len(uptime_str)))
-    set_text("follower_data_dots", _dots(10, len(str(followers))))
+    set_text("age_data_dots", _dots(54, len(uptime_str)))
+    set_text("follower_data_dots", _dots(15, len(str(followers))))
     set_text("commit_data_dots", _dots(23, len(str(total_commits))))
 
     tree.write(str(path), xml_declaration=True, encoding="UTF-8", pretty_print=False)
