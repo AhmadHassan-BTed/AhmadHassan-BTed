@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import re
 import sys
@@ -72,6 +73,28 @@ SVG_FILES = ["dark_mode.svg", "light_mode.svg"]
 
 CACHE_DIR = Path("cache")
 CACHE_FILE = CACHE_DIR / f"{hashlib.md5(USER_NAME.encode()).hexdigest()}.txt"
+
+CONFIG_FILE = Path("profile_config.json")
+
+# Configurable profile fields: (json_key, display_key, data_element_id, dots_element_id)
+# Formula: total line width is strictly 60 chars.
+# target_dots_len = 55 - len(display_key)
+# max_chars = target_dots_len - 2 (guarantees at least 2 dots: ' .. ')
+PROFILE_FIELDS = [
+    ("os",                    "OS",                    "os_data",         "os_dots"),
+    ("host",                  "Host",                  "host_data",       "host_dots"),
+    ("kernel",                "Kernel",                "kernel_data",     "kernel_dots"),
+    ("ide",                   "IDE",                   "ide_data",        "ide_dots"),
+    ("languages_programming", "Languages.Programming", "lang_prog_data",  "lang_prog_dots"),
+    ("languages_ml",          "Languages.ML",          "lang_ml_data",    "lang_ml_dots"),
+    ("languages_computer",    "Languages.Computer",    "lang_comp_data",  "lang_comp_dots"),
+    ("creator_of",            "Creator.Of",            "creator_data",    "creator_dots"),
+    ("hobbies_software",      "Hobbies.Software",      "hobby_soft_data", "hobby_soft_dots"),
+    ("hobbies_hardware",      "Hobbies.Hardware",      "hobby_hard_data", "hobby_hard_dots"),
+    ("email_personal",        "Email.Personal",        "email_data",      "email_dots"),
+    ("behance",               "Behance",               "behance_data",    "behance_dots"),
+    ("linkedin",              "LinkedIn",              "linkedin_data",   "linkedin_dots"),
+]
 
 # ──────────────────────────────────────────────────────────────────────────────
 # GraphQL queries
@@ -407,7 +430,53 @@ def format_number(n: int) -> str:
     return f"{n:,}"
 
 
-def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: int, contributed_repos: int, total_stars: int, uptime_str: str, followers: int, total_commits: int) -> None:
+def load_profile_config() -> dict[str, tuple[str, str, str, str]]:
+    """Loads profile_config.json, validates length limits, displays a character ruler,
+    and returns a mapping: field_key -> (data_id, dots_id, value, dots_str)."""
+    if not CONFIG_FILE.exists():
+        print(f"  [config] {CONFIG_FILE} not found, using SVG template defaults")
+        return {}
+
+    with CONFIG_FILE.open(encoding="utf-8") as fh:
+        raw_data = json.load(fh)
+
+    profile_data = raw_data.get("profile", raw_data)
+    result: dict[str, tuple[str, str, str, str]] = {}
+
+    print("\n" + "=" * 78)
+    print("Profile Configuration & Character Length Limits (Collision Prevention)")
+    print("=" * 78)
+    print(f"{'Field':<24} {'Len':>3}/{'Max':<3} {'Dots':>4}  {'Character Limit Ruler (#####)'}")
+    print("-" * 78)
+
+    for field_key, display_key, data_id, dots_id in PROFILE_FIELDS:
+        item = profile_data.get(field_key, "")
+        val = item.get("value", "") if isinstance(item, dict) else str(item)
+        val = val.strip()
+
+        target_dots_len = 55 - len(display_key)
+        max_chars = target_dots_len - 2
+
+        val_len = len(val)
+        status = ""
+        if val_len > max_chars:
+            status = f" -> OVERFLOW! (exceeds limit by {val_len - max_chars})"
+            print(f"  [warning] '{field_key}' is {val_len - max_chars} chars too long! Clamped to prevent SVG overflow.")
+            val = val[:max_chars]
+            val_len = max_chars
+
+        dots_str = _dots(target_dots_len, val_len)
+        dot_count = max(0, target_dots_len - val_len)
+        ruler = "#" * max_chars
+        print(f"{field_key:<24} {val_len:>3}/{max_chars:<3} {dot_count:>4}  {ruler}{status}")
+
+        result[field_key] = (data_id, dots_id, val, dots_str)
+
+    print("=" * 78)
+    return result
+
+
+def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: int, contributed_repos: int, total_stars: int, uptime_str: str, followers: int, total_commits: int, profile_fields: Optional[dict] = None) -> None:
     path = Path(filepath)
     if not path.exists():
         print(f"  [svg] {filepath} not found, skipping")
@@ -430,6 +499,16 @@ def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: in
         else:
             print(f"  [svg] warning: element #{el_id} not found in {filepath}")
 
+    # --- STATIC/CONFIGURABLE PROFILE FIELDS FROM JSON ---
+    if profile_fields is None:
+        profile_fields = load_profile_config()
+
+    for field_key, (data_id, dots_id, val, dots_str) in profile_fields.items():
+        if val:
+            set_text(data_id, val)
+            set_text(dots_id, dots_str)
+
+    # --- DYNAMIC GITHUB STATS ---
     net_str  = format_number(net)
     add_str  = format_number(added)
     del_str  = format_number(deleted)
@@ -500,9 +579,11 @@ def main() -> None:
     print(f"  Net LOC       : {format_number(net_loc)}")
     print("=" * 60)
 
+    profile_fields = load_profile_config()
+
     print("\n[svg] Updating SVG files …")
     for svg_file in SVG_FILES:
-        patch_svg(svg_file, total_added, total_deleted, net_loc, total_repos, contributed_repos, total_stars, uptime_str, followers, total_commits)
+        patch_svg(svg_file, total_added, total_deleted, net_loc, total_repos, contributed_repos, total_stars, uptime_str, followers, total_commits, profile_fields)
 
     print("\n[done] All done.")
 

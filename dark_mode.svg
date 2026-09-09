@@ -33,24 +33,24 @@
 </text>
 <text x="390" y="30" fill="#c9d1d9" xml:space="preserve">
 <tspan x="390" y="30">AhmadHassan-BTed</tspan> -———————————————————————————————————————-—-
-<tspan x="390" y="50" fill="#616e7f">. </tspan><tspan fill="#ffa657">OS</tspan>:<tspan fill="#616e7f"> ........................ </tspan><tspan fill="#a5d6ff">Windows 11, Android 16, Linux</tspan>
+<tspan x="390" y="50" fill="#616e7f">. </tspan><tspan fill="#ffa657">OS</tspan>:<tspan fill="#616e7f" id="os_dots"> ........................ </tspan><tspan fill="#a5d6ff" id="os_data">Windows 11, Android 16, Linux</tspan>
 <tspan x="390" y="70" fill="#616e7f">. </tspan><tspan fill="#ffa657">Uptime</tspan>:<tspan fill="#616e7f" id="age_data_dots"> ...................... </tspan><tspan fill="#a5d6ff" id="age_data">22 years, 6 months, 17 days</tspan>
-<tspan x="390" y="90" fill="#616e7f">. </tspan><tspan fill="#ffa657">Host</tspan>:<tspan fill="#616e7f"> .................................. </tspan><tspan fill="#a5d6ff">127.0.Islamabad.1</tspan>
-<tspan x="390" y="110" fill="#616e7f">. </tspan><tspan fill="#ffa657">Kernel</tspan>:<tspan fill="#616e7f"> ...... </tspan><tspan fill="#a5d6ff">Software Engineer/Architect, UI/UX Designer</tspan>
-<tspan x="390" y="130" fill="#616e7f">. </tspan><tspan fill="#ffa657">IDE</tspan>:<tspan fill="#616e7f"> ....................... </tspan><tspan fill="#a5d6ff">ANDROID STUDIO, VSCode, FIGMA</tspan>
+<tspan x="390" y="90" fill="#616e7f">. </tspan><tspan fill="#ffa657">Host</tspan>:<tspan fill="#616e7f" id="host_dots"> .................................. </tspan><tspan fill="#a5d6ff" id="host_data">127.0.Islamabad.1</tspan>
+<tspan x="390" y="110" fill="#616e7f">. </tspan><tspan fill="#ffa657">Kernel</tspan>:<tspan fill="#616e7f" id="kernel_dots"> ...... </tspan><tspan fill="#a5d6ff" id="kernel_data">Software Engineer/Architect, UI/UX Designer</tspan>
+<tspan x="390" y="130" fill="#616e7f">. </tspan><tspan fill="#ffa657">IDE</tspan>:<tspan fill="#616e7f" id="ide_dots"> ....................... </tspan><tspan fill="#a5d6ff" id="ide_data">ANDROID STUDIO, VSCode, FIGMA</tspan>
 <tspan x="390" y="150" fill="#616e7f">. </tspan>
-<tspan x="390" y="170" fill="#616e7f">. </tspan><tspan fill="#ffa657">Languages</tspan>.<tspan fill="#ffa657">Programming</tspan>:<tspan fill="#616e7f"> ...... </tspan><tspan fill="#a5d6ff">C/C++, Py, Java/Kt, JSX, TSX</tspan>
-<tspan x="390" y="190" fill="#616e7f">. </tspan><tspan fill="#ffa657">Languages</tspan>.<tspan fill="#ffa657">ML</tspan>:<tspan fill="#616e7f"> ......... </tspan><tspan fill="#a5d6ff">Pytorch, TensorFlow, TFlite/LiteRT</tspan>
-<tspan x="390" y="210" fill="#616e7f">. </tspan><tspan fill="#ffa657">Languages</tspan>.<tspan fill="#ffa657">Computer</tspan>:<tspan fill="#616e7f"> ......... </tspan><tspan fill="#a5d6ff">UML, LaTeX, JSON, YAML, Bash</tspan>
+<tspan x="390" y="170" fill="#616e7f">. </tspan><tspan fill="#ffa657">Languages</tspan>.<tspan fill="#ffa657">Programming</tspan>:<tspan fill="#616e7f" id="lang_prog_dots"> ...... </tspan><tspan fill="#a5d6ff" id="lang_prog_data">C/C++, Py, Java/Kt, JSX, TSX</tspan>
+<tspan x="390" y="190" fill="#616e7f">. </tspan><tspan fill="#ffa657">Languages</tspan>.<tspan fill="#ffa657">ML</tspan>:<tspan fill="#616e7f" id="lang_ml_dots"> ......... </tspan><tspan fill="#a5d6ff" id="lang_ml_data">Pytorch, TensorFlow, TFlite/LiteRT</tspan>
+<tspan x="390" y="210" fill="#616e7f">. </tspan><tspan fill="#ffa657">Languages</tspan>.<tspan fill="#ffa657">Computer</tspan>:<tspan fill="#616e7f" id="lang_comp_dots"> ......... </tspan><tspan fill="#a5d6ff" id="lang_comp_data">UML, LaTeX, JSON, YAML, Bash</tspan>
 <tspan x="390" y="230" fill="#616e7f">. </tspan>
-<tspan x="390" y="250" fill="#616e7f">. </tspan><tspan fill="#ffa657">Creator</tspan>.<tspan fill="#ffa657">Of</tspan>:<tspan fill="#616e7f"> ...... </tspan><tspan fill="#a5d6ff">Fractal, OpenHeart, B, Turnitout, Jantt</tspan>
+<tspan x="390" y="250" fill="#616e7f">. </tspan><tspan fill="#ffa657">Creator</tspan>.<tspan fill="#ffa657">Of</tspan>:<tspan fill="#616e7f" id="creator_dots"> ...... </tspan><tspan fill="#a5d6ff" id="creator_data">Fractal, OpenHeart, B, Turnitout, Jantt</tspan>
 <tspan x="390" y="270" fill="#616e7f">. </tspan>
-<tspan x="390" y="290" fill="#616e7f">. </tspan><tspan fill="#ffa657">Hobbies</tspan>.<tspan fill="#ffa657">Software</tspan>:<tspan fill="#616e7f"> .. </tspan><tspan fill="#a5d6ff">Passion Projects, Low Level Computing</tspan>
-<tspan x="390" y="310" fill="#616e7f">. </tspan><tspan fill="#ffa657">Hobbies</tspan>.<tspan fill="#ffa657">Hardware</tspan>:<tspan fill="#616e7f"> ....... </tspan><tspan fill="#a5d6ff">ESP32, Arduino UNO, Raspberry Pi</tspan>
+<tspan x="390" y="290" fill="#616e7f">. </tspan><tspan fill="#ffa657">Hobbies</tspan>.<tspan fill="#ffa657">Software</tspan>:<tspan fill="#616e7f" id="hobby_soft_dots"> .. </tspan><tspan fill="#a5d6ff" id="hobby_soft_data">Passion Projects, Low Level Computing</tspan>
+<tspan x="390" y="310" fill="#616e7f">. </tspan><tspan fill="#ffa657">Hobbies</tspan>.<tspan fill="#ffa657">Hardware</tspan>:<tspan fill="#616e7f" id="hobby_hard_dots"> ....... </tspan><tspan fill="#a5d6ff" id="hobby_hard_data">ESP32, Arduino UNO, Raspberry Pi</tspan>
 <tspan x="390" y="350">- Contact</tspan> -——————————————————————————————————————————————-—-
-<tspan x="390" y="370" fill="#616e7f">. </tspan><tspan fill="#ffa657">Email</tspan>.<tspan fill="#ffa657">Personal</tspan>:<tspan fill="#616e7f"> ............... </tspan><tspan fill="#a5d6ff">ahmadhassan.bted@gmail.com</tspan>
-<tspan x="390" y="390" fill="#616e7f">. </tspan><tspan fill="#ffa657">Behance</tspan>:<tspan fill="#616e7f"> ................................ </tspan><tspan fill="#a5d6ff">AhmadHassan_BTed</tspan>
-<tspan x="390" y="410" fill="#616e7f">. </tspan><tspan fill="#ffa657">LinkedIn</tspan>:<tspan fill="#616e7f"> ............................... </tspan><tspan fill="#a5d6ff">ahmadhassan-bted</tspan>
+<tspan x="390" y="370" fill="#616e7f">. </tspan><tspan fill="#ffa657">Email</tspan>.<tspan fill="#ffa657">Personal</tspan>:<tspan fill="#616e7f" id="email_dots"> ............... </tspan><tspan fill="#a5d6ff" id="email_data">ahmadhassan.bted@gmail.com</tspan>
+<tspan x="390" y="390" fill="#616e7f">. </tspan><tspan fill="#ffa657">Behance</tspan>:<tspan fill="#616e7f" id="behance_dots"> ................................ </tspan><tspan fill="#a5d6ff" id="behance_data">AhmadHassan_BTed</tspan>
+<tspan x="390" y="410" fill="#616e7f">. </tspan><tspan fill="#ffa657">LinkedIn</tspan>:<tspan fill="#616e7f" id="linkedin_dots"> ............................... </tspan><tspan fill="#a5d6ff" id="linkedin_data">ahmadhassan-bted</tspan>
 <tspan x="390" y="450">- GitHub Stats</tspan> -—————————————————————————————————————————-—-
 <tspan x="390" y="470" fill="#616e7f">. </tspan><tspan fill="#ffa657">Repos</tspan>:<tspan fill="#616e7f" id="repo_data_dots"> ...... </tspan><tspan fill="#a5d6ff" id="repo_data">50</tspan> {<tspan fill="#ffa657">Contributed</tspan>: <tspan fill="#a5d6ff" id="contrib_data">9</tspan>} | <tspan fill="#ffa657">Stars</tspan>:<tspan fill="#616e7f" id="star_data_dots"> .......... </tspan><tspan fill="#a5d6ff" id="star_data">3451</tspan>
 <tspan x="390" y="490" fill="#616e7f">. </tspan><tspan fill="#ffa657">Commits</tspan>:<tspan fill="#616e7f" id="commit_data_dots"> ................... </tspan><tspan fill="#a5d6ff" id="commit_data">2701</tspan> | <tspan fill="#ffa657">Followers</tspan>:<tspan fill="#616e7f" id="follower_data_dots"> ....... </tspan><tspan fill="#a5d6ff" id="follower_data">160</tspan>
