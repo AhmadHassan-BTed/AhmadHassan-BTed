@@ -1,7 +1,7 @@
 name: Update Python Stats
 on:
   schedule:
-    - cron: '0 */12 * * *'
+    - cron: '0 0,12 * * *' # Run twice daily at 00:00 and 12:00 UTC
   workflow_dispatch:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true

@@ -465,9 +465,11 @@ def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: in
     # however long the uptime string or follower count get.
     set_text("age_data_dots", _dots(49, len(uptime_str)))
     set_text("follower_data_dots", _dots(10, len(str(followers))))
-    set_text("commit_data_dots", _dots(22, len(str(total_commits))))
+    set_text("commit_data_dots", _dots(23, len(str(total_commits))))
 
     tree.write(str(path), xml_declaration=True, encoding="UTF-8", pretty_print=False)
+    with open(path, "ab") as f:
+        f.write(b"\n")
     print(f"  [svg] patched {filepath}  net={net_str} +{add_str} -{del_str}  uptime={uptime_str}  followers={followers}  commits={total_commits}")
 
 # ──────────────────────────────────────────────────────────────────────────────
