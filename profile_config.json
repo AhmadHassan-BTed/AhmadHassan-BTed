@@ -4,68 +4,69 @@
   "profile": {
     "os": {
       "value": "Windows 11, Android 16, Linux",
-      "max_chars": 56,
-      "ruler": "########################################################"
-    },
-    "host": {
-      "value": "127.0.Islamabad.1",
-      "max_chars": 54,
-      "ruler": "######################################################"
-    },
-    "kernel": {
-      "value": "Software Engineer/Architect, UI/UX Designer",
-      "max_chars": 52,
-      "ruler": "####################################################"
-    },
-    "ide": {
-      "value": "ANDROID STUDIO, VSCode, FIGMA",
-      "max_chars": 55,
-      "ruler": "#######################################################"
-    },
-    "languages_programming": {
-      "value": "C/C++, Py, Java/Kt, JSX, TSX",
-      "max_chars": 37,
-      "ruler": "#####################################"
-    },
-    "languages_ml": {
-      "value": "Pytorch, TensorFlow, TFlite/LiteRT",
-      "max_chars": 46,
-      "ruler": "##############################################"
-    },
-    "languages_computer": {
-      "value": "UML, LaTeX, JSON, YAML, Bash",
-      "max_chars": 40,
-      "ruler": "########################################"
-    },
-    "creator_of": {
-      "value": "Fractal, OpenHeart, B, Turnitout, Jantt",
-      "max_chars": 48,
-      "ruler": "################################################"
-    },
-    "hobbies_software": {
-      "value": "Passion Projects, Low Level Computing",
-      "max_chars": 42,
-      "ruler": "##########################################"
-    },
-    "hobbies_hardware": {
-      "value": "ESP32, Arduino UNO, Raspberry Pi",
-      "max_chars": 42,
-      "ruler": "##########################################"
-    },
-    "email_personal": {
-      "value": "ahmadhassan.bted@gmail.com",
-      "max_chars": 44,
-      "ruler": "############################################"
-    },
-    "behance": {
-      "value": "AhmadHassan_BTed",
       "max_chars": 51,
       "ruler": "###################################################"
     },
-    "linkedin": {
-      "value": "ahmadhassan-bted",
+    "host": {
+      "value": "127.0.Islamabad.1",
+      "max_chars": 49,
+      "ruler": "#################################################"
+    },
+    "kernel": {
+      "value": "Software Engineer/Architect, UI/UX Designer",
+      "max_chars": 47,
+      "ruler": "###############################################"
+    },
+    "ide": {
+      "value": "ANDROID STUDIO, VSCode, FIGMA",
       "max_chars": 50,
       "ruler": "##################################################"
+    },
+    "languages_programming": {
+      "value": "C/C++, Py, Java/Kt, JSX, TSX",
+      "max_chars": 32,
+      "ruler": "################################"
+    },
+    "languages_ml": {
+      "value": "Pytorch, TensorFlow, TFlite/LiteRT",
+      "max_chars": 41,
+      "ruler": "#########################################"
+    },
+    "languages_computer": {
+      "value": "UML, LaTeX, JSON, YAML, Bash",
+      "max_chars": 35,
+      "ruler": "###################################"
+    },
+    "creator_of": {
+      "value": "Fractal, OpenHeart, B, Turnitout, Jantt",
+      "max_chars": 43,
+      "ruler": "###########################################"
+    },
+    "hobbies_software": {
+      "value": "Passion Projects, Low Level Computing",
+      "max_chars": 37,
+      "ruler": "#####################################"
+    },
+    "hobbies_hardware": {
+      "value": "ESP32, Arduino UNO, Raspberry Pi",
+      "max_chars": 37,
+      "ruler": "#####################################"
+    },
+    "email_personal": {
+      "value": "ahmadhassan.bted@gmail.com",
+      "max_chars": 39,
+      "ruler": "#######################################"
+    },
+    "behance": {
+      "value": "AhmadHassan_BTed",
+      "max_chars": 46,
+      "ruler": "##############################################"
+    },
+    "linkedin": {
+      "value": "ahmadhassan-bted",
+      "max_chars": 45,
+      "ruler": "#############################################"
     }
   }
 }
+
