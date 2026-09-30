@@ -1,7 +1,7 @@
 name: Update Python Stats
 on:
   schedule:
-    - cron: '0 0,12 * * *' # Run twice daily at 00:00 and 12:00 UTC
+    - cron: '0 10 * * *' # Run once daily at 10:00 AM UTC
   workflow_dispatch:
   push:
     paths:
@@ -15,7 +15,7 @@ jobs:
       contents: write 
     steps:
       - uses: actions/checkout@v4 
-      
+       
       - name: Set up Python
         uses: actions/setup-python@v5 
         with:
