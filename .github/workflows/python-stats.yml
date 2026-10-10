@@ -1,7 +1,7 @@
 name: Update Python Stats
 on:
   schedule:
-    - cron: '0 10 * * *' # Run once daily at 10:00 AM UTC
+    - cron: '0 2,10,18 * * *' # Runs at 02:00, 10:00, and 18:00 UTC
   workflow_dispatch:
   push:
     paths:
