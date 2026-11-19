@@ -31,7 +31,7 @@
   <tspan x="15" dy="1.2em">-....-##########+       .      ...... </tspan>
 </text>
 <text x="390" y="30" fill="#c9d1d9" xml:space="preserve">
-<tspan x="390" y="30">AhmadHassan-BTed</tspan> -———————————————————————————————————————-—-
+<tspan x="390" y="30">AhmadHassan-BTed</tspan> -—————- <tspan fill="#8b949e">[</tspan><tspan fill="#56d364">#1 Pakistan</tspan> <tspan fill="#8b949e">·</tspan> <tspan fill="#ffd700">Global #62</tspan> <tspan fill="#8b949e">·</tspan> <tspan fill="#bc8cff">Legend</tspan><tspan fill="#8b949e">]</tspan>
 <tspan x="390" y="50" fill="#616e7f">. </tspan><tspan fill="#ffa657">OS</tspan>:<tspan fill="#616e7f" id="os_dots"> ........................ </tspan><tspan fill="#a5d6ff" id="os_data">Windows 11, Android 16, Linux</tspan>
 <tspan x="390" y="70" fill="#616e7f">. </tspan><tspan fill="#ffa657">Uptime</tspan>:<tspan fill="#616e7f" id="age_data_dots"> ..................... </tspan><tspan fill="#a5d6ff" id="age_data">23 years, 10 months, 18 days</tspan>
 <tspan x="390" y="90" fill="#616e7f">. </tspan><tspan fill="#ffa657">Host</tspan>:<tspan fill="#616e7f" id="host_dots"> .................................. </tspan><tspan fill="#a5d6ff" id="host_data">127.0.Islamabad.1</tspan>

@@ -1,7 +1,39 @@
 <div align="center">
+
+  <!-- Top Entrance: 3 Crown Violet Badges -->
+  <p align="center">
+    <a href="https://gitranks.com/profile/AhmadHassan-BTed/country">
+      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/rank.svg?scope=country&scheme=violet" alt="Stars Rank #1 in Pakistan" />
+    </a>
+    <a href="https://gitranks.com/profile/AhmadHassan-BTed/country">
+      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/rank.svg?by=followers&scope=country&scheme=violet" alt="Followers Rank #1 in Pakistan" />
+    </a>
+    <a href="https://gitranks.com/profile/AhmadHassan-BTed">
+      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/rank.svg?scheme=violet" alt="Global Stars Rank #62 · Top 0.01%" />
+    </a>
+  </p>
+
+  <!-- Centerpiece: Terminal Card -->
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg">
     <source media="(prefers-color-scheme: light)" srcset="light_mode.svg">
     <img alt="Ahmad Hassan's GitHub Stats" src="dark_mode.svg" width="100%">
   </picture>
+
+  <!-- Footer Proof: 4 Foundation Badges -->
+  <p align="center">
+    <a href="https://gitranks.com/profile/AhmadHassan-BTed">
+      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/tier.svg" alt="GitRanks Legend" />
+    </a>
+    <a href="https://gitranks.com/profile/AhmadHassan-BTed">
+      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/rank.svg?lang=HTML" alt="HTML Rank #15 Worldwide" />
+    </a>
+    <a href="https://gitranks.com/profile/AhmadHassan-BTed">
+      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/month.svg" alt="Monthly Growth +35,686 Stars" />
+    </a>
+    <a href="https://gitranks.com/profile/AhmadHassan-BTed">
+      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/goal.svg" alt="Next Goal: Top 50 Developers" />
+    </a>
+  </p>
+
 </div>
