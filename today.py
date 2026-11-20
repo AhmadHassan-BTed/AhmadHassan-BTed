@@ -491,9 +491,9 @@ def get_gitranks_stats(username: str = USER_NAME) -> dict[str, str]:
         resp = requests.get(url, headers={"User-Agent": "curl/7.68.0"}, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
-            c_rank = data.get("rankCountry", {}).get("s", 1)
-            c_name = data.get("country", "Pakistan")
-            g_rank = data.get("rankGlobal", {}).get("s", 62)
+            c_rank = data.get("rankCountry", {}).get("s") or 1
+            c_name = data.get("country") or "Pakistan"
+            g_rank = data.get("rankGlobal", {}).get("s") or 62
             tier_name = "Legend"
             return {
                 "country_rank_str": f"#{c_rank} {c_name}",
@@ -580,7 +580,7 @@ def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: in
         t_str = gitranks_stats.get("tier_str", "Legend")
 
         badge_len = len(c_str) + len(g_str) + len(t_str) + 8
-        num_dashes = max(1, 60 - 16 - badge_len - 2)
+        num_dashes = max(1, 60 - 16 - badge_len - 4)
         sep_str = f" -{'—' * num_dashes}- "
 
         set_text("header_sep", sep_str)
