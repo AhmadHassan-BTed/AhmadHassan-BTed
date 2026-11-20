@@ -16,7 +16,7 @@
       <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/rank.svg?by=followers&scope=country&scheme=violet" alt="Followers Rank #1 in Pakistan" />
     </a>
     <a href="https://gitranks.com/profile/AhmadHassan-BTed">
-      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/rank.svg?scheme=violet" alt="Global Stars Rank #62 · Top 0.01%" />
+      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/rank.svg?scheme=violet&label=global+stars+rank" alt="AhmadHassan-BTed on GitRanks: global stars rank #62 · top 0.01%" />
     </a>
   </p>
 
