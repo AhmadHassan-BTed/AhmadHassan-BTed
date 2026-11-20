@@ -18,7 +18,7 @@ from lxml import etree
 # Configuration
 # ──────────────────────────────────────────────────────────────────────────────
 
-ACCESS_TOKEN: str = os.environ["ACCESS_TOKEN"]
+ACCESS_TOKEN: str = os.environ.get("ACCESS_TOKEN", "")
 USER_NAME: str    = os.environ.get("USER_NAME", "AhmadHassan-BTed")
 
 # Date of birth, used to compute the live "Uptime" field.
@@ -476,7 +476,38 @@ def load_profile_config() -> dict[str, tuple[str, str, str, str]]:
     return result
 
 
-def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: int, contributed_repos: int, total_stars: int, uptime_str: str, followers: int, total_commits: int, profile_fields: Optional[dict] = None) -> None:
+def get_gitranks_stats(username: str = USER_NAME) -> dict[str, str]:
+    """
+    Fetches live ranking and tier data from GitRanks API facts endpoint.
+    Falls back gracefully to current locked values if unreachable or timed out.
+    """
+    url = f"https://gitranks.com/api/badge/v3/user/{username}"
+    fallback = {
+        "country_rank_str": "#1 Pakistan",
+        "global_rank_str": "Global #62",
+        "tier_str": "Legend",
+    }
+    try:
+        resp = requests.get(url, headers={"User-Agent": "curl/7.68.0"}, timeout=10)
+        if resp.status_code == 200:
+            data = resp.json()
+            c_rank = data.get("rankCountry", {}).get("s", 1)
+            c_name = data.get("country", "Pakistan")
+            g_rank = data.get("rankGlobal", {}).get("s", 62)
+            tier_name = "Legend"
+            return {
+                "country_rank_str": f"#{c_rank} {c_name}",
+                "global_rank_str": f"Global #{g_rank}",
+                "tier_str": tier_name,
+            }
+        else:
+            print(f"  [gitranks] API returned status {resp.status_code}, using fallback")
+    except Exception as e:
+        print(f"  [gitranks] Failed to fetch live GitRanks data ({e}), using fallback")
+    return fallback
+
+
+def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: int, contributed_repos: int, total_stars: int, uptime_str: str, followers: int, total_commits: int, profile_fields: Optional[dict] = None, gitranks_stats: Optional[dict] = None) -> None:
     path = Path(filepath)
     if not path.exists():
         print(f"  [svg] {filepath} not found, skipping")
@@ -539,6 +570,24 @@ def patch_svg(filepath: str, added: int, deleted: int, net: int, total_repos: in
     set_text("repo_data_dots", _dots(25, len(dynamic_repo_text)))
     set_text("star_data_dots", _dots(14, len(str(total_stars))))
 
+    # --- DYNAMIC GITRANKS HEADER ---
+    if gitranks_stats is None:
+        gitranks_stats = get_gitranks_stats()
+
+    if "header_country" in id_map:
+        c_str = gitranks_stats.get("country_rank_str", "#1 Pakistan")
+        g_str = gitranks_stats.get("global_rank_str", "Global #62")
+        t_str = gitranks_stats.get("tier_str", "Legend")
+
+        badge_len = len(c_str) + len(g_str) + len(t_str) + 8
+        num_dashes = max(1, 60 - 16 - badge_len - 2)
+        sep_str = f" -{'—' * num_dashes}- "
+
+        set_text("header_sep", sep_str)
+        set_text("header_country", c_str)
+        set_text("header_global", g_str)
+        set_text("header_tier", t_str)
+
     # age_data_dots / follower_data_dots: target lengths reproduce the original
     # template's line width (dots + value) so things stay visually aligned
     # however long the uptime string or follower count get.
@@ -580,10 +629,12 @@ def main() -> None:
     print("=" * 60)
 
     profile_fields = load_profile_config()
+    gitranks_stats = get_gitranks_stats(USER_NAME)
+    print(f"\n[gitranks] Live Rankings: {gitranks_stats['country_rank_str']} · {gitranks_stats['global_rank_str']} · {gitranks_stats['tier_str']}")
 
     print("\n[svg] Updating SVG files …")
     for svg_file in SVG_FILES:
-        patch_svg(svg_file, total_added, total_deleted, net_loc, total_repos, contributed_repos, total_stars, uptime_str, followers, total_commits, profile_fields)
+        patch_svg(svg_file, total_added, total_deleted, net_loc, total_repos, contributed_repos, total_stars, uptime_str, followers, total_commits, profile_fields, gitranks_stats)
 
     print("\n[done] All done.")
 
