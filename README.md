@@ -23,16 +23,16 @@
   <!-- Bottom Tier: Foundation Proof & Velocity -->
   <p align="center">
     <a href="https://gitranks.com/profile/AhmadHassan-BTed">
-      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/tier.svg" alt="GitRanks Legend" />
+      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/tier.svg?extra=level" alt="AhmadHassan-BTed on GitRanks: gitranks Legend · level 5 of 5" />
     </a>
     <a href="https://gitranks.com/profile/AhmadHassan-BTed">
-      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/rank.svg?lang=HTML" alt="HTML Rank #15 Worldwide" />
+      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/month.svg" alt="AhmadHassan-BTed on GitRanks: this month +35,964 ★ · 57,462 to beat Oct" />
     </a>
     <a href="https://gitranks.com/profile/AhmadHassan-BTed">
-      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/month.svg" alt="Monthly Growth +35,686 Stars" />
+      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/climb.svg?extra=race" alt="AhmadHassan-BTed on GitRanks: this month ↑37 places · 12,504 to beat Oct" />
     </a>
     <a href="https://gitranks.com/profile/AhmadHassan-BTed">
-      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/goal.svg" alt="Next Goal: Top 50 Developers" />
+      <img src="https://gitranks.com/badge/user/AhmadHassan-BTed/language-rank.svg?language=Kotlin&extra=top" alt="AhmadHassan-BTed on GitRanks: Kotlin rank #40 · top 0.1%" />
     </a>
   </p>
 
